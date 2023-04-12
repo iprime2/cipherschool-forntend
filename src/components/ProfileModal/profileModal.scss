@@ -1,0 +1,140 @@
+.profileModal {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1003;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .profileModalWrapper {
+    position: fixed;
+    padding: 40px 50px;
+    background-color: white;
+    border-radius: 20px;
+    width: 40%;
+
+    .profileModalTitle {
+      font-weight: var(--fw-bold);
+    }
+
+    .profileModalMain {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+
+      .profileModalMainLeft {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+
+        .profileModalImg {
+          width: 150px;
+          height: 150px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+
+        .profileModalIcon {
+          position: absolute;
+          color: white;
+          border-radius: 50%;
+          background-color: black;
+          padding: 8px;
+          font-size: 20px;
+          top: 130px;
+          cursor: pointer;
+        }
+      }
+
+      .profileModalMainRight {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+
+        .profileModalItems {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          gap: 5px;
+
+          .profileModalItem {
+            display: flex;
+            flex-direction: column;
+
+            .profileModalTitle {
+              width: 100%;
+              font-weight: var(--fw-medium);
+            }
+
+            .profileModalInputWrapper {
+              margin-top: 5px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 100%;
+              background-color: var(--blue-white);
+              padding: 10px;
+              border-radius: 10px;
+
+              .profileModalInput {
+                width: 100%;
+                border: none;
+                background-color: transparent;
+
+                &:focus {
+                  outline: none;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    .profileModalButtons {
+      margin-top: 15px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      gap: 10px;
+
+      .profileModalBtnCancel {
+        border: none;
+        border-radius: 5px;
+        font-weight: var(--fw-medium);
+        width: 100px;
+        height: 35px;
+        cursor: pointer;
+        transition: 0.15s ease;
+        color: white;
+        background-color: rgba(8, 15, 15, 0.85);
+
+        &:hover {
+          background-color: rgba(37, 37, 37, 0.85);
+        }
+      }
+
+      .profileModalBtn {
+        color: white;
+        border: none;
+        border-radius: 5px;
+        background-color: var(--main-color);
+        font-weight: var(--fw-medium);
+        width: 100px;
+        height: 35px;
+        cursor: pointer;
+        transition: 0.15s ease;
+
+        &:hover {
+          background-color: var(--hover-color);
+        }
+      }
+    }
+  }
+}

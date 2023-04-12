@@ -1,0 +1,71 @@
+.rightbar {
+  width: 16%;
+  position: fixed;
+  left: 84%;
+  height: 100%;
+
+  .rightbarWrapper {
+    margin-top: 10px;
+    height: 100%;
+    display: flex;
+
+    .righbarIcon {
+      background-color: white;
+      font-size: 34px;
+      border-radius: 5px 0px 0px 5px;
+      cursor: pointer;
+    }
+
+    .righbarMenuItems {
+      background-color: white;
+      padding: 20px 20px;
+      width: 80%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      flex-direction: column;
+      gap: 10px;
+
+      .activeRightbarMenuItem {
+        background-color: var(--main-color);
+        color: white;
+        padding: 10px 5px;
+        width: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        cursor: pointer;
+        border-radius: 8px;
+        gap: 10px;
+      }
+
+      .rightbarMenuItem {
+        padding: 10px 5px;
+        width: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        cursor: pointer;
+        gap: 10px;
+
+        .rightbarItemIcon {
+          font-size: 30px;
+        }
+
+        .rightbarItemTitle {
+          font-weight: var(--fw-medium);
+        }
+
+        &:hover {
+          background-color: antiquewhite;
+          border-radius: 5px;
+        }
+      }
+
+      .rightbarIconImg {
+        width: 22px;
+        height: 22px;
+      }
+    }
+  }
+}

@@ -1,0 +1,113 @@
+.home {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+
+  .header {
+    height: 60px;
+    width: 100%;
+  }
+
+  .main {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    position: relative;
+
+    .mainContainer {
+      width: calc(100% - 67px);
+      margin-left: 4%;
+      height: 100%;
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+
+      .mainHeader {
+        position: fixed;
+        background-color: white;
+        background-image: url(https://www.cipherschools.com/static/media/ProfileCover.e525f2d51356332792cb.png);
+        width: 100%;
+        height: 120px;
+        opacity: 100%;
+        z-index: 998;
+
+        .mainHeaderWrapper {
+          height: 100%;
+          background: linear-gradient(to right, white, transparent, white);
+
+          .mainHeaderWrapperLeft {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: row;
+            height: 100%;
+            padding: 0 100px 0 50px;
+
+            .mainHeaderWrapperLeftItem {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              .profileImgWrapper {
+                display: flex;
+                align-items: center;
+                position: relative;
+
+                .editIconWrapper {
+                  position: absolute;
+                  top: 55px;
+                  left: 20px;
+                  padding: 2px 4px;
+                  border-radius: 50%;
+                  background-color: #202b47;
+                  cursor: pointer;
+
+                  .editIcon {
+                    font-weight: var(--fw-bold);
+                    font-size: 18px;
+                    color: white;
+                  }
+                }
+
+                .mainHeaderProfileImg {
+                  width: 70px;
+                  height: 70px;
+                  border-radius: 50%;
+                  object-fit: cover;
+                }
+              }
+
+              .followers {
+                font-weight: var(--fw-medium);
+                font-size: 16px;
+              }
+
+              .mainHeaderWrapperLeftInfo {
+                margin-left: 20px;
+                display: flex;
+                align-items: left;
+                justify-content: flex-start;
+                flex-direction: column;
+                font-size: 20px;
+
+                .profileName {
+                  font-weight: var(--ff-bold);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .mainBody {
+        height: calc(100% - 80px);
+        display: flex;
+        width: 100%;
+        background-color: var(--blue-white);
+        margin-top: 120px;
+        position: relative;
+      }
+    }
+  }
+}
