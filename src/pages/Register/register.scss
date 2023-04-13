@@ -13,7 +13,7 @@
     align-items: flex-start;
     justify-content: flex-start;
     border-radius: 30px;
-    padding: 30px 40px;
+    padding: 25px 40px;
     flex-direction: column;
 
     .registerLevelOne {
@@ -34,6 +34,7 @@
     }
 
     .registerLevelTwo {
+      margin-top: 20px;
       width: 100%;
       display: flex;
       align-items: center;
@@ -77,6 +78,10 @@
       flex-direction: column;
       margin-top: 50px;
       gap: 20px;
+
+      .inputError {
+        color: red;
+      }
 
       .registerLevelThreeInputItem {
         width: 100%;

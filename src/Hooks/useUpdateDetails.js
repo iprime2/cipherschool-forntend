@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import axios from 'axios'
 
 const useUpdateDetails = (detailsData, accessToken, userId) => {
-  const [data, setData] = useState(null)
-  const [msg, setMsg] = useState(null)
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [updateData, setUpdateData] = useState(null)
+  const [updateMsg, setUpdateMsg] = useState(null)
+  const [updateError, setUpdateError] = useState(null)
+  const [updateLoading, setUpdateLoading] = useState(false)
 
   const updateDetails = async () => {
-    setLoading(true)
+    setUpdateLoading(true)
     try {
-      const res = await axios.post(
+      const res = await axios.put(
         process.env.REACT_APP_API_URL + 'details/' + userId,
         detailsData,
         {
@@ -20,16 +20,16 @@ const useUpdateDetails = (detailsData, accessToken, userId) => {
         }
       )
       console.log(res.data)
-      setMsg(res.data.msg)
-      setData(res.data.updateUser)
+      setUpdateMsg(res.data.msg)
+      setUpdateData(res.data.updateUser)
     } catch (error) {
-      setError(error?.response?.data)
+      setUpdateError(error?.response?.data)
       console.log(error)
     }
-    setLoading(false)
+    setUpdateLoading(false)
   }
 
-  return [data, updateDetails, error, loading, msg]
+  return [updateData, updateDetails, updateError, updateLoading, updateMsg]
 }
 
 export default useUpdateDetails

@@ -1,24 +1,18 @@
 import './interestsModal.scss'
-import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import useUpdateInterest from '../../Hooks/useUpdateInterest'
+import { AuthContext } from '../../context/authContext/AuthContext'
 
-const InterestsModal = ({ toggleInterestsModal }) => {
-  const [password, setPassword] = useState({
-    currentPassword: '',
-    newPassword: '',
-    newConfirmPassword: '',
-  })
+const InterestsModal = ({ interests, toggleInterestsModal, userDetails }) => {
+  const { user } = useContext(AuthContext)
 
-  const [interests, setInterests] = useState([
-    { name: 'App Development', isSelected: true },
-    { name: 'Web Development', isSelected: false },
-    { name: 'Game Development', isSelected: false },
-    { name: 'Data Structure', isSelected: true },
-    { name: 'Programming', isSelected: false },
-    { name: 'Machine Learning', isSelected: false },
-    { name: 'Data Science', isSelected: false },
-    { name: 'Others', isSelected: false },
-  ])
+  const [interestsData, setInterestsData] = useState([])
+
+  const [data, updateInterests, msg, error, loading] = useUpdateInterest(
+    interestsData,
+    user.accessToken,
+    user._id
+  )
 
   useEffect(() => {
     document.body.style.overflowY = 'hidden'
@@ -27,7 +21,19 @@ const InterestsModal = ({ toggleInterestsModal }) => {
     }
   }, [])
 
-  useEffect(() => {}, [interests])
+  const createInterestsData = () => {
+    for (let i = 0; i < interests.length; ++i) {
+      if (
+        interests[i].isSelected === true &&
+        !interestsData.includes(interests[i].name)
+      ) {
+        interestsData.push(interests[i].name)
+      } else if (interests[i].isSelected === true) {
+        interestsData.pop(interests[i].name)
+      }
+    }
+    updateInterests()
+  }
 
   const handleInterests = (name) => {
     for (let i = 0; i < interests.length; i++) {
@@ -35,8 +41,6 @@ const InterestsModal = ({ toggleInterestsModal }) => {
         interests[i].isSelected = !interests[i].isSelected
       }
     }
-
-    console.log(interests)
   }
 
   return (
@@ -56,6 +60,7 @@ const InterestsModal = ({ toggleInterestsModal }) => {
             </div>
           ))}
         </div>
+        {msg && <span style={{ color: 'green' }}>{msg}</span>}
         <div className='interestsModalButtons'>
           <button
             className='interestsModalBtnCancel'
@@ -63,7 +68,12 @@ const InterestsModal = ({ toggleInterestsModal }) => {
           >
             Cancel
           </button>
-          <button className='passwordModalBtnSave'>Save</button>
+          <button
+            className='passwordModalBtnSave'
+            onClick={createInterestsData}
+          >
+            Save
+          </button>
         </div>
       </div>
     </div>

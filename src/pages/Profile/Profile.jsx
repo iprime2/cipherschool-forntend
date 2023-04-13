@@ -1,5 +1,5 @@
 import './profile.scss'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import Sidebar from '../../components/Sidebar/Sidebar'
 import EditIcon from '@mui/icons-material/Edit'
@@ -7,15 +7,38 @@ import Content from '../../components/Content/Content'
 import Rightbar from '../../components/Rightbar/Rightbar'
 import ProfileModal from '../../components/ProfileModal/ProfileModal'
 import { AuthContext } from '../../context/authContext/AuthContext'
-import noAvatar from '../../images/noAvatar.png'
+import axios from 'axios'
+import { updateUser } from '../../context/authContext/AuthActions'
 
 const Home = () => {
   const [profileModal, setProfileModal] = useState(false)
-  const { user } = useContext(AuthContext)
+  const { user, dispatch } = useContext(AuthContext)
 
   const toggleProfileModal = () => {
     setProfileModal(!profileModal)
   }
+
+  useEffect(() => {
+    const getUpdatedUser = async (req, res) => {
+      try {
+        const res = await axios.get(
+          process.env.REACT_APP_API_URL + 'users/find/' + user._id,
+          {
+            headers: {
+              token: 'bearer ' + user.accessToken,
+            },
+          }
+        )
+        console.log(res.data)
+        dispatch(updateUser(res.data))
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    //getUpdatedUser()
+  }, [])
+
   return (
     <div className='home'>
       <div className='header'>
@@ -32,7 +55,10 @@ const Home = () => {
                   <div className='profileImgWrapper'>
                     <img
                       src={
-                        !user?.profilePicture ? user.profilePicture : noAvatar
+                        user?.profilePicture
+                          ? process.env.REACT_APP_ASSETS_URL +
+                            user.profilePicture
+                          : process.env.REACT_APP_ASSETS_URL + 'noAvatar.png'
                       }
                       alt=''
                       className='mainHeaderProfileImg'

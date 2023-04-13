@@ -4,11 +4,13 @@ import EditIcon from '@mui/icons-material/Edit'
 import { AuthContext } from '../../context/authContext/AuthContext'
 import noAvatar from '../../images/noAvatar.png'
 import useUpdateUser from '../../Hooks/useUpdateUser'
+import axios from 'axios'
 
 const ProfileModal = ({ toggleProfileModal }) => {
   const { user } = useContext(AuthContext)
-
   const [profileData, setProfileData] = useState({})
+  const [file, setFile] = useState()
+  const [fileName, setFileName] = useState()
 
   const [data, updateUser, error, loading, msg] = useUpdateUser(
     profileData,
@@ -23,7 +25,38 @@ const ProfileModal = ({ toggleProfileModal }) => {
     }
   }, [])
 
-  const handlePasswordChange = (e) => {
+  useEffect(() => {
+    const handleProfilePic = async () => {
+      if (file) {
+        const fileData = new FormData()
+        const fileName = user.firstName + '.jpg'
+        setFileName(fileName)
+        profileData.profilePicture = fileName
+        fileData.append('name', fileName)
+        fileData.append('file', file)
+
+        try {
+          const res = await axios.post(
+            process.env.REACT_APP_API_URL + 'upload',
+            fileData
+          )
+          console.log(res)
+        } catch (error) {
+          console.log(error)
+        }
+      }
+
+      updateUser()
+    }
+
+    handleProfilePic()
+  }, [file])
+
+  const profilePic = (e) => {
+    setFile(e.target.files[0])
+  }
+
+  const handleProfileChange = (e) => {
     e.preventDefault()
 
     const name = e.target.name
@@ -37,6 +70,7 @@ const ProfileModal = ({ toggleProfileModal }) => {
 
   const handleUpdateProfile = () => {
     updateUser()
+    //window.location.reload()
   }
 
   console.log(profileData)
@@ -48,11 +82,25 @@ const ProfileModal = ({ toggleProfileModal }) => {
         <div className='profileModalMain'>
           <div className='profileModalMainLeft'>
             <img
-              src={user?.profilePicture ? user.profilePicture : noAvatar}
+              src={
+                user?.profilePicture
+                  ? process.env.REACT_APP_ASSETS_URL + user.profilePicture
+                  : process.env.REACT_APP_ASSETS_URL + 'noAvatar.png'
+              }
               alt=''
               className='profileModalImg'
             />
-            <EditIcon className='profileModalIcon' />
+
+            <label htmlFor='file' className='profileModalIcon'>
+              <EditIcon htmlFor='file' />
+              <input
+                style={{ display: 'none' }}
+                type='file'
+                id='file'
+                accept='.png,.jepg,.jpg'
+                onChange={profilePic}
+              />
+            </label>
           </div>
           <div className='profileModalMainRight'>
             <div className='profileModalItems'>
@@ -60,7 +108,7 @@ const ProfileModal = ({ toggleProfileModal }) => {
                 <span className='profileModalTitle'>First Name</span>
                 <div className='profileModalInputWrapper'>
                   <input
-                    onChange={handlePasswordChange}
+                    onChange={handleProfileChange}
                     type='text'
                     name='firstName'
                     className='profileModalInput'
@@ -72,7 +120,7 @@ const ProfileModal = ({ toggleProfileModal }) => {
                 <span className='profileModalTitle'>Last Name</span>
                 <div className='profileModalInputWrapper'>
                   <input
-                    onChange={handlePasswordChange}
+                    onChange={handleProfileChange}
                     type='text'
                     name='lastName'
                     className='profileModalInput'
@@ -84,7 +132,7 @@ const ProfileModal = ({ toggleProfileModal }) => {
                 <span className='profileModalTitle'>Email Address</span>
                 <div className='profileModalInputWrapper'>
                   <input
-                    onChange={handlePasswordChange}
+                    onChange={handleProfileChange}
                     type='text'
                     name='email'
                     className='profileModalInput'
@@ -96,11 +144,11 @@ const ProfileModal = ({ toggleProfileModal }) => {
                 <span className='profileModalTitle'>Mobile Number</span>
                 <div className='profileModalInputWrapper'>
                   <input
-                    onChange={handlePasswordChange}
+                    onChange={handleProfileChange}
                     type='number'
                     name='mobileNumber'
                     className='profileModalInput'
-                    placeholder='Confirm Password'
+                    placeholder='Mobile Number (optional)'
                   />
                 </div>
               </div>

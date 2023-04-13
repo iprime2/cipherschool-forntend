@@ -79,6 +79,10 @@
       margin-top: 50px;
       gap: 20px;
 
+      .inputError {
+        color: red;
+      }
+
       .loginLevelThreeInputItem {
         width: 100%;
         display: flex;

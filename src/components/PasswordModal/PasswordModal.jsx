@@ -11,6 +11,7 @@ const PasswordModal = ({ togglePasswordModal }) => {
     newPassword: '',
     newConfirmPassword: '',
   })
+  const [passwordType, setPasswordType] = useState('password')
 
   const [data, changePassword, error, loading] = useChangePassword(
     password,
@@ -50,12 +51,19 @@ const PasswordModal = ({ togglePasswordModal }) => {
             <div className='passwordModalInputWrapper'>
               <input
                 onChange={handlePasswordChange}
-                type='password'
+                type={passwordType}
                 name='currentPassword'
                 className='passwordModalInput'
                 placeholder='Current Password'
               />
-              <RemoveRedEyeOutlinedIcon className='passwordMOdalIcon' />
+              <RemoveRedEyeOutlinedIcon
+                className='passwordMOdalIcon'
+                onClick={() =>
+                  passwordType === 'password'
+                    ? setPasswordType('text')
+                    : setPasswordType('password')
+                }
+              />
             </div>
           </div>
           <div className='passwordModalItem'>
@@ -63,12 +71,19 @@ const PasswordModal = ({ togglePasswordModal }) => {
             <div className='passwordModalInputWrapper'>
               <input
                 onChange={handlePasswordChange}
-                type='password'
+                type={passwordType}
                 name='newPassword'
                 className='passwordModalInput'
                 placeholder='New Password'
               />
-              <RemoveRedEyeOutlinedIcon className='passwordMOdalIcon' />
+              <RemoveRedEyeOutlinedIcon
+                className='passwordMOdalIcon'
+                onClick={() =>
+                  passwordType === 'password'
+                    ? setPasswordType('text')
+                    : setPasswordType('password')
+                }
+              />
             </div>
           </div>
           <div className='passwordModalItem'>
@@ -76,12 +91,19 @@ const PasswordModal = ({ togglePasswordModal }) => {
             <div className='passwordModalInputWrapper'>
               <input
                 onChange={handlePasswordChange}
-                type='password'
+                type={passwordType}
                 name='newConfirmPassword'
                 className='passwordModalInput'
                 placeholder='Confirm Password'
               />
-              <RemoveRedEyeOutlinedIcon className='passwordMOdalIcon' />
+              <RemoveRedEyeOutlinedIcon
+                className='passwordMOdalIcon'
+                onClick={() =>
+                  passwordType === 'password'
+                    ? setPasswordType('text')
+                    : setPasswordType('password')
+                }
+              />
             </div>
           </div>
         </div>

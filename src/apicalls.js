@@ -6,6 +6,7 @@ import {
 } from './context/authContext/AuthActions'
 
 export const login = async (user, dispatch) => {
+  console.log(user)
   dispatch(loginStart())
   try {
     const res = await axios.post(

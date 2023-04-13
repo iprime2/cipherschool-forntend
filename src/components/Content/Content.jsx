@@ -1,5 +1,4 @@
 import './content.scss'
-
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import GitHubIcon from '@mui/icons-material/GitHub'
@@ -8,28 +7,29 @@ import TwitterIcon from '@mui/icons-material/Twitter'
 import InstagramIcon from '@mui/icons-material/Instagram'
 import LanguageIcon from '@mui/icons-material/Language'
 import EditIcon from '@mui/icons-material/Edit'
-import PasswordModal from '../PasswordModal/PasswordModal'
-import InterestsModal from '../InterestsModal/InterestsModal'
 import axios from 'axios'
 import { AuthContext } from '../../context/authContext/AuthContext'
+import useCreateDetails from '../../Hooks/useCreateDetails'
 import useUpdateDetails from '../../Hooks/useUpdateDetails'
+import Interests from '../Interests/Interests'
+import Password from '../Password/Password'
+import { loginSuccess } from '../../context/authContext/AuthActions'
 
 const Content = () => {
-  const { user } = useContext(AuthContext)
-  const [userDetails, setUserDetails] = useState({
-    userId: user._id || null,
-  })
+  const { user, dispatch } = useContext(AuthContext)
+  const [userDetails, setUserDetails] = useState({})
   const [aboutEdit, setAboutEdit] = useState(false)
   const [linksEdit, setLinksEdit] = useState(false)
   const [infoEdit, setInfoEdit] = useState(false)
-  const [passwordModal, setPasswordModal] = useState(false)
-  const [interestsModal, setInterestsModal] = useState(false)
 
-  const [data, updateDetails, error, loading, msg] = useUpdateDetails(
+  const [data, createDetails, error, loading, msg] = useCreateDetails(
     userDetails,
     user.accessToken,
     user._id
   )
+
+  const [updateData, updateDetails, updateError, updateLoading, updateMsg] =
+    useUpdateDetails(userDetails, user.accessToken, user._id)
 
   useEffect(() => {
     const getDetails = async () => {
@@ -42,7 +42,6 @@ const Content = () => {
             },
           }
         )
-        console.log(res)
         setUserDetails(res.data)
       } catch (error) {
         console.log(error)
@@ -50,21 +49,27 @@ const Content = () => {
     }
 
     getDetails()
+  }, [])
+
+  useEffect(() => {
+    setUserDetails({ userId: user._id || null })
+    createDetails()
   }, [user])
 
-  const handleUserDetails = () => {
+  const handleUserDetails = (type) => {
     updateDetails()
-    setAboutEdit(!aboutEdit)
-  }
 
-  console.log(userDetails)
+    if (type === 'links') {
+      setLinksEdit(!linksEdit)
+    }
 
-  const togglePasswordModal = () => {
-    setPasswordModal(!passwordModal)
-  }
+    if (type === 'aboutMe') {
+      setAboutEdit(!aboutEdit)
+    }
 
-  const toggleInterestsModal = () => {
-    setInterestsModal(!interestsModal)
+    if (type === 'info') {
+      setInfoEdit(!infoEdit)
+    }
   }
 
   const saveAbout = (e) => {
@@ -79,7 +84,6 @@ const Content = () => {
     const value = e.target.value
 
     setUserDetails((prev) => ({ ...prev, [name]: value }))
-    console.log(userDetails)
   }
 
   return (
@@ -89,7 +93,10 @@ const Content = () => {
           <span className='contentItemTitle'>ABOUT ME</span>
 
           {aboutEdit ? (
-            <button className='contentItemEditBtn' onClick={handleUserDetails}>
+            <button
+              className='contentItemEditBtn'
+              onClick={() => handleUserDetails('aboutMe')}
+            >
               Save
             </button>
           ) : (
@@ -139,12 +146,22 @@ const Content = () => {
       <div className='contentItem'>
         <div className='contentItemTop'>
           <span className='contentItemTitle'>ON THE WEB</span>
-          <button
-            className='contentItemEditBtn'
-            onClick={() => setLinksEdit(!linksEdit)}
-          >
-            {linksEdit ? 'Save' : 'Edit'}
-          </button>
+
+          {linksEdit ? (
+            <button
+              className='contentItemEditBtn'
+              onClick={() => handleUserDetails('links')}
+            >
+              Save
+            </button>
+          ) : (
+            <button
+              className='contentItemEditBtn'
+              onClick={() => setLinksEdit(!linksEdit)}
+            >
+              Edit
+            </button>
+          )}
         </div>
         <div className='contentItemBottomLink'>
           <div className='linksItems'>
@@ -243,14 +260,22 @@ const Content = () => {
       <div className='contentItem'>
         <div className='contentItemTop'>
           <span className='contentItemTitle'>PROFESSIONAL INFORMATION ME</span>
-          <button
-            className='contentItemEditBtn'
-            onClick={() => {
-              setInfoEdit(!infoEdit)
-            }}
-          >
-            {infoEdit ? 'Save' : 'Edit'}
-          </button>
+
+          {infoEdit ? (
+            <button
+              className='contentItemEditBtn'
+              onClick={() => handleUserDetails('info')}
+            >
+              Save
+            </button>
+          ) : (
+            <button
+              className='contentItemEditBtn'
+              onClick={() => setInfoEdit(!infoEdit)}
+            >
+              Edit
+            </button>
+          )}
         </div>
         <div className='contentItemBottomPro'>
           <div className='linksItemsPro'>
@@ -261,22 +286,13 @@ const Content = () => {
                 className='linksOption'
                 onChange={handleLinksInputs}
                 disabled={!infoEdit}
+                name='education'
               >
-                <option value='Primary' name='education'>
-                  Primary
-                </option>
-                <option value='Secondary' name='education'>
-                  Secondary
-                </option>
-                <option value='High Secondary' name='education'>
-                  High Secondary
-                </option>
-                <option value='Graduation' name='education'>
-                  Graduation
-                </option>
-                <option value='Post Graduation' name='education'>
-                  Post Graduation
-                </option>
+                <option value='Primary'>Primary</option>
+                <option value='Secondary'>Secondary</option>
+                <option value='High Secondary'>High Secondary</option>
+                <option value='Graduation'>Graduation</option>
+                <option value='Post Graduation'>Post Graduation</option>
               </select>
             </div>
           </div>
@@ -288,68 +304,23 @@ const Content = () => {
                 className='linksOption'
                 onChange={handleLinksInputs}
                 disabled={!infoEdit}
+                name='currently'
               >
-                <option value='Schooling' name='currently'>
-                  Schooling
-                </option>
-                <option value='Graduation' name='currently'>
-                  College Student
-                </option>
-                <option value='Teaching' name='currently'>
-                  Teaching
-                </option>
-                <option value='Job' name='currently'>
-                  Job
-                </option>
-                <option value='Freelancing' name='currently'>
-                  Freelancing
-                </option>
+                <option value='Schooling'>Schooling</option>
+                <option value='Graduation'>College Student</option>
+                <option value='Teaching'>Teaching</option>
+                <option value='Job'>Job</option>
+                <option value='Freelancing'>Freelancing</option>
               </select>
             </div>
           </div>
         </div>
       </div>
       <div className='contentDivider'></div>
-      {passwordModal && (
-        <PasswordModal togglePasswordModal={togglePasswordModal} />
-      )}
-      <div className='contentItemPass'>
-        <div className='contentItemTop'>
-          <span className='contentItemTitle'>PASSWORD & SECURITY</span>
-          <button className='contentItemEditBtn' onClick={togglePasswordModal}>
-            Change
-          </button>
-        </div>
-        <div className='contentItemBottomPass'>
-          <span className='passTitle'>PASSWORD</span>
-          <input
-            className='passInput'
-            type='password'
-            placeholder='**********'
-            disabled
-          ></input>
-        </div>
-      </div>
+      <Password />
       <div className='contentDivider'></div>
-      {interestsModal && (
-        <InterestsModal toggleInterestsModal={toggleInterestsModal} />
-      )}
-      <div className='contentItemInterest'>
-        <div className='contentItemTopInterest'>
-          <span className='contentItemTitleInterest'>INTERESTS</span>
-          <button
-            className='contentItemEditBtnInterest'
-            onClick={toggleInterestsModal}
-          >
-            Edit
-          </button>
-        </div>
-        <div className='contentItemBottomInterest'>
-          <div className='interestItem'>App Development</div>
-          <div className='interestItem'>Game Development</div>
-          <div className='interestItem'>Programming</div>
-        </div>
-      </div>
+
+      <Interests userDetails={userDetails} />
     </div>
   )
 }
