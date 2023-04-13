@@ -146,6 +146,10 @@
         height: 45px;
         border-radius: 12px;
         cursor: pointer;
+
+        &:hover {
+          background-color: var(--hover-color);
+        }
       }
 
       .registerText {

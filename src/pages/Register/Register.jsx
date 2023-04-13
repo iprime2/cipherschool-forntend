@@ -1,10 +1,12 @@
 import './register.scss'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
 import { useFormik } from 'formik'
 import { signupSchema } from '../../schema'
 import { Link } from 'react-router-dom'
+import useRegister from '../../Hooks/useRegister'
+import CircularProgress from '@mui/material/CircularProgress'
 
 const initialValues = {
   firstName: '',
@@ -34,6 +36,12 @@ const Register = () => {
     password: '',
   })
 
+  const [data, createUser, error, loading, msg, errMsg] = useRegister(register)
+
+  const registerUser = async () => {
+    createUser()
+  }
+
   const handleRegisterInput = (e) => {
     e.preventDefault()
 
@@ -45,8 +53,6 @@ const Register = () => {
       [name]: value,
     }))
   }
-
-  console.log(register)
 
   return (
     <div className='register'>
@@ -69,15 +75,15 @@ const Register = () => {
             Please provide your valid informations to signup
           </span>
         </div>
-        <form className='registerLevelThree' onSubmit={handleSubmit}>
+        <form className='registerLevelThree'>
           <div className='registerLevelThreeInputItem'>
             <input
-              onChange={handleChange}
+              onChange={handleRegisterInput}
               type='text'
               name='firstName'
               placeholder='First Name'
               className='registerLevelThreeInput'
-              value={values.firstName}
+              value={register.firstName}
               onBlur={handleBlur}
             />
           </div>
@@ -86,12 +92,12 @@ const Register = () => {
           ) : null}
           <div className='registerLevelThreeInputItem'>
             <input
-              onChange={handleChange}
+              onChange={handleRegisterInput}
               type='text'
               name='lastName'
               placeholder='Last Name'
               className='registerLevelThreeInput'
-              value={values.lastName}
+              value={register.lastName}
               onBlur={handleBlur}
             />
           </div>
@@ -100,12 +106,12 @@ const Register = () => {
           ) : null}
           <div className='registerLevelThreeInputItem'>
             <input
-              onChange={handleChange}
+              onChange={handleRegisterInput}
               type='text'
               name='email'
               placeholder='Email Address'
               className='registerLevelThreeInput'
-              value={values.email}
+              value={register.email}
               onBlur={handleBlur}
             />
           </div>
@@ -114,12 +120,12 @@ const Register = () => {
           ) : null}
           <div className='registerLevelThreeInputItem'>
             <input
-              onChange={handleChange}
+              onChange={handleRegisterInput}
               type='text'
               name='phone'
               placeholder='Phone (Optional)'
               className='registerLevelThreeInput'
-              value={values.phone}
+              value={register.phone}
               onBlur={handleBlur}
             />
           </div>
@@ -131,12 +137,12 @@ const Register = () => {
             style={{ display: 'flex', alignItems: 'center' }}
           >
             <input
-              onChange={handleChange}
+              onChange={handleRegisterInput}
               type={passwordType}
               name='password'
               placeholder='Password'
               className='registerLevelThreeInput'
-              value={values.password}
+              value={register.password}
               onBlur={handleBlur}
             />
             <RemoveRedEyeOutlinedIcon
@@ -152,8 +158,16 @@ const Register = () => {
             <span className='inputError'>{errors.password}</span>
           ) : null}
         </form>
+        {msg && <span style={{ color: 'green' }}>{msg}</span>}
+        {errMsg && <span style={{ color: 'red' }}>{errMsg}</span>}
         <div className='registerLevelFour'>
-          <button className='registerBtn'>Sign up</button>
+          <button className='registerBtn' onClick={registerUser}>
+            {loading ? (
+              <CircularProgress className='registerLoading' />
+            ) : (
+              'Sign up'
+            )}
+          </button>
           <div className='registerText'>
             <span className='registerDontText'>Already have an account?</span>
             <Link to='/login' style={{ textDecoration: 'none' }}>

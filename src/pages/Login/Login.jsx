@@ -7,17 +7,15 @@ import { login } from '../../apicalls'
 import { Link } from 'react-router-dom'
 import { useFormik } from 'formik'
 import { loginSchema } from '../../schema'
+import CircularProgress from '@mui/material/CircularProgress'
 
 const Login = () => {
-  //const [email, setEmail] = useState('')
-  //const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const { isFetching, dispatch, user } = useContext(AuthContext)
   const [passwordType, setPasswordType] = useState('password')
 
   const onSubmit = (values, action) => {
-    console.log(values)
-    console.log('hello')
-    handleLogin(values.email, values.password)
     action.resetForm()
   }
 
@@ -31,7 +29,8 @@ const Login = () => {
     onSubmit,
   })
 
-  const handleLogin = (email, password) => {
+  const handleLogin = (e) => {
+    e.preventDefault()
     login({ email, password }, dispatch)
   }
 
@@ -58,16 +57,15 @@ const Login = () => {
           </span>
         </div>
 
-        <form className='loginLevelThree' onSubmit={formik.handleSubmit}>
+        <form className='loginLevelThree'>
           <div className='loginLevelThreeInputItem'>
             <input
-              onChange={formik.handleChange}
+              onChange={(e) => setEmail(e.target.value)}
               type='text'
               name='email'
               placeholder='E-mail ID'
               className='loginLevelThreeInput'
-              value={formik.values.name}
-              onBlur={formik.handleBlur}
+              value={email}
             />
           </div>
           {formik.errors.email && formik.touched.email ? (
@@ -78,12 +76,12 @@ const Login = () => {
             style={{ display: 'flex', alignItems: 'center' }}
           >
             <input
-              onChange={formik.handleChange}
+              onChange={(e) => setPassword(e.target.value)}
               type={passwordType}
               name='password'
               placeholder='Password'
               className='loginLevelThreeInput'
-              value={formik.values.name}
+              value={password}
               onBlur={formik.handleBlur}
             />
             <RemoveRedEyeOutlinedIcon
@@ -108,7 +106,7 @@ const Login = () => {
             disabled={isFetching}
             type='submit'
           >
-            Signin
+            {isFetching ? <CircularProgress /> : 'Signin'}
           </button>
           <div className='registerText'>
             <span className='loginDontText'>Don't have account ?</span>

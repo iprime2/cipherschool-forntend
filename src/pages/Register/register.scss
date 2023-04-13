@@ -146,6 +146,15 @@
         height: 45px;
         border-radius: 12px;
         cursor: pointer;
+
+        .registerLoading {
+          color: white;
+          font-size: 10px;
+        }
+
+        &:hover {
+          background-color: var(--hover-color);
+        }
       }
 
       .registerText {
