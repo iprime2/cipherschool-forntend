@@ -10,6 +10,7 @@ import leterIcon from '../../images/letter-c.png'
 import FeedbackIcon from '@mui/icons-material/Feedback'
 import SignpostIcon from '@mui/icons-material/Signpost'
 import LogoutIcon from '@mui/icons-material/Logout'
+import { Link } from 'react-router-dom'
 
 const Sidebar = () => {
   return (
@@ -54,10 +55,12 @@ const Sidebar = () => {
           </div>
         </div>
         <div className='sidebarBottom'>
-          <div className='sidebarTopItem'>
-            <LogoutIcon className='sidebarIcon' />
-            <span>Logout</span>
-          </div>
+          <Link to='/logout'>
+            <div className='sidebarTopItem'>
+              <LogoutIcon className='sidebarIcon' />
+              <span>Logout</span>
+            </div>
+          </Link>
         </div>
       </div>
     </div>

@@ -1,19 +1,21 @@
 import './profile.scss'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import Sidebar from '../../components/Sidebar/Sidebar'
 import EditIcon from '@mui/icons-material/Edit'
 import Content from '../../components/Content/Content'
 import Rightbar from '../../components/Rightbar/Rightbar'
 import ProfileModal from '../../components/ProfileModal/ProfileModal'
+import { AuthContext } from '../../context/authContext/AuthContext'
+import noAvatar from '../../images/noAvatar.png'
 
 const Home = () => {
   const [profileModal, setProfileModal] = useState(false)
+  const { user } = useContext(AuthContext)
 
   const toggleProfileModal = () => {
     setProfileModal(!profileModal)
   }
-
   return (
     <div className='home'>
       <div className='header'>
@@ -29,7 +31,9 @@ const Home = () => {
                 <div className='mainHeaderWrapperLeftItem'>
                   <div className='profileImgWrapper'>
                     <img
-                      src='https://lh3.googleusercontent.com/a/AGNmyxbXs5E1xOWvRPr3HIFkBd-HXvFvm0QBgrHf-fK-Wg=s96-c'
+                      src={
+                        !user?.profilePicture ? user.profilePicture : noAvatar
+                      }
                       alt=''
                       className='mainHeaderProfileImg'
                     />
@@ -45,8 +49,10 @@ const Home = () => {
                   )}
                   <div className='mainHeaderWrapperLeftInfo'>
                     <span>Hello,</span>
-                    <span className='profileName'>Sushil Gupta</span>
-                    <span>Kalwarsushil2@gmail.com</span>
+                    <span className='profileName'>
+                      {user.firstName + ' ' + user.lastName}
+                    </span>
+                    <span>{user.email}</span>
                   </div>
                 </div>
                 <div className='mainHeaderWrapperLeftItem'>

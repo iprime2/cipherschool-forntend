@@ -1,13 +1,26 @@
 import './passwordModal.scss'
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { AuthContext } from '../../context/authContext/AuthContext'
+import useChangePassword from '../../Hooks/useChangePassword'
 
 const PasswordModal = ({ togglePasswordModal }) => {
+  const { user } = useContext(AuthContext)
   const [password, setPassword] = useState({
     currentPassword: '',
     newPassword: '',
     newConfirmPassword: '',
   })
+
+  const [data, changePassword, error, loading] = useChangePassword(
+    password,
+    user.accessToken,
+    user._id
+  )
+
+  const handlePassword = () => {
+    changePassword()
+  }
 
   useEffect(() => {
     document.body.style.overflowY = 'hidden'
@@ -15,8 +28,6 @@ const PasswordModal = ({ togglePasswordModal }) => {
       document.body.style.overflowY = 'scroll'
     }
   }, [])
-
-  console.log(password)
 
   const handlePasswordChange = (e) => {
     e.preventDefault()
@@ -74,6 +85,8 @@ const PasswordModal = ({ togglePasswordModal }) => {
             </div>
           </div>
         </div>
+        {error && <span style={{ color: 'red' }}>{error}</span>}
+        {data && <span style={{ color: 'green' }}>{data}</span>}
         <div className='testing'>
           <div className='passwordModalButtons'>
             <button
@@ -82,7 +95,9 @@ const PasswordModal = ({ togglePasswordModal }) => {
             >
               Cancel
             </button>
-            <button className='passwordModalBtn'>Save</button>
+            <button className='passwordModalBtn' onClick={handlePassword}>
+              Save
+            </button>
           </div>
         </div>
       </div>

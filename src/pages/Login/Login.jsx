@@ -4,32 +4,15 @@ import CloseIcon from '@mui/icons-material/Close'
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
 import { AuthContext } from '../../context/authContext/AuthContext'
 import { login } from '../../apicalls'
-import axios from 'axios'
-import {
-  loginFailure,
-  loginStart,
-  loginSuccess,
-} from '../../context/authContext/AuthActions'
 
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const { isFetching, dispatch } = useContext(AuthContext)
+  const { isFetching, dispatch, user } = useContext(AuthContext)
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault()
-    //login({ email, password }, dispatch)
-    dispatch(loginStart())
-    try {
-      const res = await axios.post(
-        process.env.REACT_APP_API_URL + 'auth/login',
-        { email, password }
-      )
-      dispatch(loginSuccess(res.data))
-      console.log(res)
-    } catch (error) {
-      dispatch(loginFailure())
-    }
+    login({ email, password }, dispatch)
   }
 
   return (
@@ -58,7 +41,7 @@ const Login = () => {
         <div className='loginLevelThree'>
           <div className='loginLevelThreeInputItem'>
             <input
-              onChange={(e) => setEmail(e.target.email)}
+              onChange={(e) => setEmail(e.target.value)}
               type='text'
               name='email'
               placeholder='E-mail ID'
@@ -70,7 +53,7 @@ const Login = () => {
             style={{ display: 'flex', alignItems: 'center' }}
           >
             <input
-              onChange={(e) => setPassword(e.target.email)}
+              onChange={(e) => setPassword(e.target.value)}
               type='password'
               name='password'
               placeholder='Password'

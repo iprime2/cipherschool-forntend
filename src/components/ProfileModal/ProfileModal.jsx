@@ -1,14 +1,20 @@
 import './profileModal.scss'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import EditIcon from '@mui/icons-material/Edit'
+import { AuthContext } from '../../context/authContext/AuthContext'
+import noAvatar from '../../images/noAvatar.png'
+import useUpdateUser from '../../Hooks/useUpdateUser'
 
 const ProfileModal = ({ toggleProfileModal }) => {
-  const [profileData, setProfileData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    mobileNumber: '',
-  })
+  const { user } = useContext(AuthContext)
+
+  const [profileData, setProfileData] = useState({})
+
+  const [data, updateUser, error, loading, msg] = useUpdateUser(
+    profileData,
+    user.accessToken,
+    user._id
+  )
 
   useEffect(() => {
     document.body.style.overflowY = 'hidden'
@@ -29,6 +35,12 @@ const ProfileModal = ({ toggleProfileModal }) => {
     }))
   }
 
+  const handleUpdateProfile = () => {
+    updateUser()
+  }
+
+  console.log(profileData)
+
   return (
     <div className='profileModal'>
       <div className='profileModalWrapper'>
@@ -36,7 +48,7 @@ const ProfileModal = ({ toggleProfileModal }) => {
         <div className='profileModalMain'>
           <div className='profileModalMainLeft'>
             <img
-              src='https://lh3.googleusercontent.com/a/AGNmyxbXs5E1xOWvRPr3HIFkBd-HXvFvm0QBgrHf-fK-Wg=s96-c'
+              src={user?.profilePicture ? user.profilePicture : noAvatar}
               alt=''
               className='profileModalImg'
             />
@@ -95,6 +107,8 @@ const ProfileModal = ({ toggleProfileModal }) => {
             </div>
           </div>
         </div>
+        {error && <span style={{ color: 'red' }}>{error}</span>}
+        {msg && <span style={{ color: 'green' }}>{msg}</span>}
         <div className='profileModalButtons'>
           <button
             className='profileModalBtnCancel'
@@ -102,7 +116,9 @@ const ProfileModal = ({ toggleProfileModal }) => {
           >
             Cancel
           </button>
-          <button className='profileModalBtn'>Save</button>
+          <button className='profileModalBtn' onClick={handleUpdateProfile}>
+            Save
+          </button>
         </div>
       </div>
     </div>

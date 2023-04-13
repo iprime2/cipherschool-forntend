@@ -1,6 +1,6 @@
 import './content.scss'
 
-import React, { useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import FacebookIcon from '@mui/icons-material/Facebook'
@@ -10,29 +10,54 @@ import LanguageIcon from '@mui/icons-material/Language'
 import EditIcon from '@mui/icons-material/Edit'
 import PasswordModal from '../PasswordModal/PasswordModal'
 import InterestsModal from '../InterestsModal/InterestsModal'
+import axios from 'axios'
+import { AuthContext } from '../../context/authContext/AuthContext'
+import useUpdateDetails from '../../Hooks/useUpdateDetails'
 
 const Content = () => {
+  const { user } = useContext(AuthContext)
+  const [userDetails, setUserDetails] = useState({
+    userId: user._id || null,
+  })
   const [aboutEdit, setAboutEdit] = useState(false)
   const [linksEdit, setLinksEdit] = useState(false)
   const [infoEdit, setInfoEdit] = useState(false)
   const [passwordModal, setPasswordModal] = useState(false)
   const [interestsModal, setInterestsModal] = useState(false)
 
-  // data
-  const [about, setAbout] = useState('hello')
-  const [links, setLinks] = useState({
-    linkedin: '',
-    github: '',
-    facebook: '',
-    twitter: '',
-    instagram: '',
-    website: '',
-    education: '',
-    currently: '',
-    password: '',
-  })
+  const [data, updateDetails, error, loading, msg] = useUpdateDetails(
+    userDetails,
+    user.accessToken,
+    user._id
+  )
 
-  const [interests, setInterests] = useState([])
+  useEffect(() => {
+    const getDetails = async () => {
+      try {
+        const res = await axios.get(
+          process.env.REACT_APP_API_URL + 'details/' + user._id,
+          {
+            headers: {
+              token: 'bearer ' + user.accessToken,
+            },
+          }
+        )
+        console.log(res)
+        setUserDetails(res.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    getDetails()
+  }, [user])
+
+  const handleUserDetails = () => {
+    updateDetails()
+    setAboutEdit(!aboutEdit)
+  }
+
+  console.log(userDetails)
 
   const togglePasswordModal = () => {
     setPasswordModal(!passwordModal)
@@ -53,7 +78,8 @@ const Content = () => {
     const name = e.target.name
     const value = e.target.value
 
-    setLinks((prev) => ({ ...prev, [name]: value }))
+    setUserDetails((prev) => ({ ...prev, [name]: value }))
+    console.log(userDetails)
   }
 
   return (
@@ -62,21 +88,30 @@ const Content = () => {
         <div className='contentItemTop'>
           <span className='contentItemTitle'>ABOUT ME</span>
 
-          <button
-            className='contentItemEditBtn'
-            onClick={() => setAboutEdit(!aboutEdit)}
-          >
-            {aboutEdit ? 'Save' : 'Edit'}
-          </button>
+          {aboutEdit ? (
+            <button className='contentItemEditBtn' onClick={handleUserDetails}>
+              Save
+            </button>
+          ) : (
+            <button
+              className='contentItemEditBtn'
+              onClick={() => setAboutEdit(!aboutEdit)}
+            >
+              Edit
+            </button>
+          )}
         </div>
         <div className='contentItemBottom'>
           <textarea
-            value={about}
-            onChange={(e) => setAbout(e.target.value)}
+            value={userDetails?.aboutMe}
+            onChange={handleLinksInputs}
             className='contentItemInput'
             placeholder='Add something about you.'
             disabled={!aboutEdit}
-          ></textarea>
+            name='aboutMe'
+          >
+            {userDetails?.aboutMe}
+          </textarea>
         </div>
       </div>
       <div className='contentDivider'></div>
@@ -117,10 +152,12 @@ const Content = () => {
             <div className='linkInputWrapper'>
               <LinkedInIcon className='inputIcon' />
               <input
+                value={userDetails?.linkedinLink}
                 disabled={!linksEdit}
                 className='linksInput'
                 onChange={handleLinksInputs}
                 placeholder='Linkedin'
+                name='linkedinLink'
               ></input>
               {linksEdit && <EditIcon className='inputIcon' />}
             </div>
@@ -130,10 +167,12 @@ const Content = () => {
             <div className='linkInputWrapper'>
               <GitHubIcon className='inputIcon' />
               <input
+                value={userDetails?.githubLink}
                 disabled={!linksEdit}
                 className='linksInput'
                 onChange={handleLinksInputs}
                 placeholder='Github'
+                name='githubLink'
               ></input>
               {linksEdit && <EditIcon className='inputIcon' />}
             </div>
@@ -143,10 +182,12 @@ const Content = () => {
             <div className='linkInputWrapper'>
               <FacebookIcon className='inputIcon' />
               <input
+                value={userDetails?.facebookLink}
                 disabled={!linksEdit}
                 className='linksInput'
                 onChange={handleLinksInputs}
                 placeholder='Faceboook'
+                name='facebookLink'
               ></input>
               {linksEdit && <EditIcon className='inputIcon' />}
             </div>
@@ -156,10 +197,12 @@ const Content = () => {
             <div className='linkInputWrapper'>
               <TwitterIcon className='inputIcon' />
               <input
+                value={userDetails?.twitterLink}
                 disabled={!linksEdit}
                 className='linksInput'
                 onChange={handleLinksInputs}
                 placeholder='Twitter'
+                name='twitterLink'
               ></input>
               {linksEdit && <EditIcon className='inputIcon' />}
             </div>
@@ -169,10 +212,12 @@ const Content = () => {
             <div className='linkInputWrapper'>
               <InstagramIcon className='inputIcon' />
               <input
+                value={userDetails?.instagramLink}
                 disabled={!linksEdit}
                 className='linksInput'
                 onChange={handleLinksInputs}
                 placeholder='Instagram'
+                name='instagramLink'
               ></input>
               {linksEdit && <EditIcon className='inputIcon' />}
             </div>
@@ -182,10 +227,12 @@ const Content = () => {
             <div className='linkInputWrapper'>
               <LanguageIcon className='inputIcon' />
               <input
+                value={userDetails?.websiteLink}
                 disabled={!linksEdit}
                 className='linksInput'
                 onChange={handleLinksInputs}
                 placeholder='Website'
+                name='websiteLink'
               ></input>
               {linksEdit && <EditIcon className='inputIcon' />}
             </div>
@@ -210,23 +257,26 @@ const Content = () => {
             <div className='linkItemProWrapper'>
               <span className='linksTitle'>Highest education</span>
               <select
+                value={userDetails?.education}
                 className='linksOption'
                 onChange={handleLinksInputs}
                 disabled={!infoEdit}
               >
-                <option value='Primary' name='Primary'>
+                <option value='Primary' name='education'>
                   Primary
                 </option>
-                <option value='Secondary' name='Secondary'>
+                <option value='Secondary' name='education'>
                   Secondary
                 </option>
-                <option value='High Secondary' name='HIgh Secondary'>
+                <option value='High Secondary' name='education'>
                   High Secondary
                 </option>
-                <option value='Graduation' name='Graduation' selected>
+                <option value='Graduation' name='education'>
                   Graduation
                 </option>
-                <option value='Post Graduation'>Post Graduation</option>
+                <option value='Post Graduation' name='education'>
+                  Post Graduation
+                </option>
               </select>
             </div>
           </div>
@@ -234,23 +284,24 @@ const Content = () => {
             <div className='linkItemProWrapper'>
               <span className='linksTitle'>What do you currently?</span>
               <select
+                value={userDetails?.currently}
                 className='linksOption'
                 onChange={handleLinksInputs}
                 disabled={!infoEdit}
               >
-                <option value='Schooling' name='Schooling'>
+                <option value='Schooling' name='currently'>
                   Schooling
                 </option>
-                <option value='Graduation' name='Graduation' selected>
+                <option value='Graduation' name='currently'>
                   College Student
                 </option>
-                <option value='Teaching' name='Teaching'>
+                <option value='Teaching' name='currently'>
                   Teaching
                 </option>
-                <option value='Job' name='Job'>
+                <option value='Job' name='currently'>
                   Job
                 </option>
-                <option value='Freelancing' name='Freelancing'>
+                <option value='Freelancing' name='currently'>
                   Freelancing
                 </option>
               </select>
